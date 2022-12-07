@@ -1,0 +1,58 @@
+import java.io.*;
+import java.net.*;
+import java.util.Date;
+
+public class server {
+public static void main(String[] args) throws Exception {
+
+//  if (args.length < 1) return;
+// int port = Integer.parseInt(args[0]);
+
+
+int port =352;
+try (ServerSocket serverSocket = new ServerSocket(port)) {
+	//ServerSocket creates a svsocket and and binds it to a specified local port number 
+	//the port can be retrieved by calling "getLocalPort"
+	//The maximum queue length for incoming connection indications (a request to connect) is set to 50.
+	//If a connection indication arrives when the queue is full, the connection is refused. 
+
+while (true) {
+Socket sock = serverSocket.accept();
+//A socket is an endpoint for communication between two machines.
+//The term socket programming refers to writing programs that execute across multiple computers in which the devices are all connected to each other using a network.
+//accept() = Listens for a connection to be made to this socket and accepts it.
+
+InetAddress addr = serverSocket.getInetAddress();
+int portd = sock.getPort();
+System.out.println(portd);
+System.out.println(addr);
+//i think it's self explanatory, you get the inet and port
+
+  System.out.println("New client connected");
+
+  OutputStream output = sock.getOutputStream();
+  //This abstract class "OutputStream is the superclass of all classes representing an output stream of bytes.
+  //An output stream accepts output bytes and sends them to some sink.
+  //"getOutputStream() = Returns an output stream for this socket. 
+  
+  
+  PrintWriter writer = new PrintWriter(output, true);
+
+  BufferedReader in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
+  String inputLine;
+  while((inputLine=in.readLine())!=null) {
+
+System.out.println("Received message: "+inputLine+" from "+sock.toString());
+writer.println(inputLine);
+}
+writer.println(new Date().toString());
+ 
+ }
+
+   }
+ catch (IOException ex) {
+System.out.println("Server exception: " + ex.getMessage());
+ex.printStackTrace();
+}
+}
+}
