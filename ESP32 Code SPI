@@ -1,0 +1,40 @@
+#include <esp_log.h>
+#include <driver/spi_master.h>
+
+#define PIN_NUM_MOSI 23
+#define PIN_NUM_MISO 19
+#define PIN_NUM_CLK  18
+#define PIN_NUM_CS   5
+
+static const char *TAG = "example";
+
+// Initialize the SPI bus
+spi_bus_config_t bus_config = {
+    .mosi_io_num = PIN_NUM_MOSI,
+    .miso_io_num = PIN_NUM_MISO,
+    .sclk_io_num = PIN_NUM_CLK,
+    .quadwp_io_num = -1,
+    .quadhd_io_num = -1
+};
+
+// Initialize the SPI device
+spi_device_interface_config_t dev_config = {
+    .command_bits = 0,
+    .address_bits = 0,
+    .dummy_bits = 0,
+    .mode = 0,
+    .duty_cycle_pos = 128,
+    .cs_ena_pretrans = 0,
+    .cs_ena_posttrans = 0,
+    .clock_speed_hz = 1000000,
+    .spics_io_num = PIN_NUM_CS,
+    .flags = 0,
+    .queue_size = 7
+};
+
+// Send data to the slave device
+void send_data(uint8_t *data, size_t len) {
+    spi_transaction_t trans;
+    memset(&trans, 0, sizeof(trans));
+    trans.length = len * 8;
+   
