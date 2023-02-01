@@ -1,0 +1,50 @@
+#include <SPI.h>
+
+const int csPin = 10;  // Chip select pin
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(csPin, OUTPUT);
+  digitalWrite(csPin, HIGH);  // Deselect the BME280
+  SPI.begin();
+  SPI.setBitOrder(MSBFIRST);
+  SPI.setDataMode(SPI_MODE0);
+  SPI.setClockDivider(SPI_CLOCK_DIV4);  // Set the clock frequency to 4 MHz
+}
+
+void loop() {
+  int temp, pressure, humidity;
+
+  // Read temperature
+  digitalWrite(csPin, LOW);  // Select the BME280
+  SPI.transfer(0xFA);  // Send temperature measurement command
+  int tempData = SPI.transfer(0x00) << 12 | SPI.transfer(0x00) << 4 | SPI.transfer(0x00) >> 4;  // Read temperature data
+  digitalWrite(csPin, HIGH);  // Deselect the BME280
+  temp = tempData / 100.0;  // Convert temperature data to degrees Celsius
+
+  // Read pressure
+  digitalWrite(csPin, LOW);  // Select the BME280
+  SPI.transfer(0xF7);  // Send pressure measurement command
+  int pressureData = SPI.transfer(0x00) << 12 | SPI.transfer(0x00) << 4 | SPI.transfer(0x00) >> 4;  // Read pressure data
+  digitalWrite(csPin, HIGH);  // Deselect the BME280
+  pressure = pressureData / 25600.0;  // Convert pressure data to hPa
+
+  // Read humidity
+  digitalWrite(csPin, LOW);  // Select the BME280
+  SPI.transfer(0xFD);  // Send humidity measurement command
+  int humidityData = SPI.transfer(0x00) << 8 | SPI.transfer(0x00);  // Read humidity data
+  digitalWrite(csPin, HIGH);  // Deselect the BME280
+  humidity = humidityData / 1024.0;  // Convert humidity data to %
+
+  Serial.print("Temperature: ");
+  Serial.print(temp);
+  Serial.println(" *C");
+  Serial.print("Pressure: ");
+  Serial.print(pressure);
+  Serial.println(" hPa");
+  Serial.print("Humidity: ");
+  Serial.print(humidity);
+  Serial.println(" %");
+
+  delay(1000);
+}
