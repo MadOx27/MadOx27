@@ -1,0 +1,20 @@
+* C:\Users\RDorobantu\Desktop\MPPT_Driver.asc
+V1 N001 0 24
+L1 N002 N003 47µ
+M1 N001 N007 N002 N002 Si7336ADP
+R2 N003 0 20k tol=1 pwr=0.1
+D1 0 N002 D
+XU1 N004 0 0 N006 0 N007 N007 N002 N005 LTC7001
+C2 N005 N002 0.1µ V=50 Irms=0 Rser=0 Lser=0 mfg="Murata" pn="GCM155R71H104KE02" type="X7R"
+V2 N004 0 5
+V3 N006 0 PULSE(0 5 0 0 0 1.5u 4.4u)
+C1 N003 0 22µ
+.model D D
+.lib C:\Users\RDorobantu\Documents\LTspiceXVII\lib\cmp\standard.dio
+.model NMOS NMOS
+.model PMOS PMOS
+.lib C:\Users\RDorobantu\Documents\LTspiceXVII\lib\cmp\standard.mos
+.tran 1
+.lib LTC7001.sub
+.backanno
+.end
